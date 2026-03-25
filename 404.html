@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Ismail Zidan</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --mid: #666;
+      --bg: #ffffff;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+    }
+
+    /* Dark mode preference */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --black: #f0ede8;
+        --mid: #8a8680;
+        --bg: #0a0a0a;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 500px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1;
+    }
+
+    p {
+      font-size: 1.15rem;
+      color: var(--mid);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .redirect-msg {
+      font-size: 14px;
+      color: var(--mid);
+      opacity: 0.8;
+    }
+
+    .loader {
+      width: 40px;
+      height: 2px;
+      background: var(--mid);
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .loader::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -40px;
+      width: 100%;
+      height: 100%;
+      background: var(--black);
+      animation: load 3s linear forwards;
+    }
+
+    @keyframes load {
+      to { left: 0; }
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border: 1px solid var(--black);
+      border-radius: 100px;
+      text-decoration: none;
+      color: var(--black);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background: var(--black);
+      color: var(--bg);
+    }
+  </style>
+
+  <!-- Automatic redirect back to home -->
+  <script>
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 3000);
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>404</h1>
+    <p>The page you are looking for has either been moved or doesn't exist.</p>
+    
+    <div class="loader"></div>
+    <div class="redirect-msg">Taking you back home in a moment...</div>
+    
+    <a href="index.html" class="btn">Return Home Now</a>
+  </div>
+</body>
+</html>

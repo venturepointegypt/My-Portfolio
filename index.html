@@ -7,6 +7,27 @@
   <title>Ismail Zidan — Senior IT Advisor</title>
   <meta name="description"
     content="Senior IT Advisor & Digital Transformation Expert with 28+ years across MENA. USAID & EU-funded programs." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://venturepointegypt.github.io/My-Portfolio/" />
+  <meta property="og:title" content="Ismail Zidan — Senior IT Advisor" />
+  <meta property="og:description"
+    content="Senior IT Advisor & Digital Transformation Expert with 28+ years across MENA. USAID & EU-funded programs." />
+  <meta property="og:image" content="https://venturepointegypt.github.io/My-Portfolio/Ismail_zidan_profile.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://venturepointegypt.github.io/My-Portfolio/" />
+  <meta property="twitter:title" content="Ismail Zidan — Senior IT Advisor" />
+  <meta property="twitter:description"
+    content="Senior IT Advisor & Digital Transformation Expert with 28+ years across MENA. USAID & EU-funded programs." />
+  <meta property="twitter:image" content="https://venturepointegypt.github.io/My-Portfolio/Ismail_zidan_profile.jpg" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,23 +52,8 @@
 
     /* ── Custom cursor (desktop only) ──────────────────────────────── */
     @media (pointer: fine) {
-      body {
-        cursor: none
-      }
-
-      a,
-      button,
-      [role="button"],
-      .skc,
-      .pc,
-      .cc,
-      .nl a,
-      .btn,
-      .hbg,
-      .logo,
-      #dm-toggle {
-        cursor: none
-      }
+      body { cursor: none }
+      a, button, [role="button"], .skc, .pc, .cc, .nl a, .btn, .hbg, .logo, #dm-toggle { cursor: none }
     }
 
     #cursor {
@@ -62,8 +68,7 @@
       mix-blend-mode: difference;
       pointer-events: none;
       z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: transform .15s ease, width .2s ease, height .2s ease
+      transition: width .2s ease, height .2s ease
     }
 
     #cursor.big {
@@ -72,9 +77,7 @@
     }
 
     @media (pointer: fine) {
-      #cursor {
-        display: block
-      }
+      #cursor { display: block }
     }
 
     :root {
@@ -261,10 +264,20 @@
     }
 
     .logo {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--black)
+      display: flex;
+      align-items: center;
+      transition: transform .3s cubic-bezier(0.22, 1, 0.36, 1)
+    }
+
+    .logo img {
+      height: 36px;
+      width: auto;
+      display: block;
+      border-radius: 8px; /* Optional: adds a soft look to the square monogram */
+    }
+
+    .logo:hover {
+      transform: scale(1.05)
     }
 
     .nl {
@@ -1428,7 +1441,9 @@
 
   <nav id="nav">
     <div class="ni">
-      <a href="#hero" class="logo">IZ</a>
+      <a href="#hero" class="logo" aria-label="Ismail Zidan Home">
+        <img src="favicon.png" alt="IZ Logo">
+      </a>
       <ul class="nl" id="nl">
         <li><a href="#about">About</a></li>
         <li><a href="#expertise">Expertise</a></li>
@@ -1874,6 +1889,7 @@
       </div>
       <div class="rv">
         <form id="cform" class="cform" novalidate>
+          <input type="hidden" name="access_key" value="8c297ed1-3801-4ee2-b6fd-79579ddb2d42" />
           <div class="fg"><label for="nm">Full Name</label><input type="text" id="nm" name="name"
               placeholder="Your name" required /></div>
           <div class="fg"><label for="em">Email Address</label><input type="email" id="em" name="email"
@@ -2367,38 +2383,21 @@
     })();
     /* ── End Animated Counters ───────────────────────────────────────── */
 
-    /* ── Custom Cursor (lerp follow + hover scale) ─────────────────── */
+    /* ── Custom Cursor (instant follow + hover scale) ──────────────── */
     (function () {
       const cur = document.getElementById('cursor');
       if (!cur || !window.matchMedia('(pointer:fine)').matches) return;
 
-      let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-      let cx = mx, cy = my;
-      const LERP = 0.35;
-
+      // Instant 1:1 follow — no lerp, no delay
       document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
+        cur.style.transform = `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%))`;
       }, { passive: true });
 
       const hoverSels = 'a,button,[role="button"],.skc,.pc,.cc,.logo,#dm-toggle';
       document.querySelectorAll(hoverSels).forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          cur.classList.add('big');
-          if (el.id === 'dm-toggle') cur.style.mixBlendMode = 'normal'; // better visibility on the tiny toggle
-        }, { passive: true });
-        el.addEventListener('mouseleave', () => {
-          cur.classList.remove('big');
-          cur.style.mixBlendMode = 'difference';
-        }, { passive: true });
+        el.addEventListener('mouseenter', () => cur.classList.add('big'), { passive: true });
+        el.addEventListener('mouseleave', () => cur.classList.remove('big'), { passive: true });
       });
-
-      (function loop() {
-        cx += (mx - cx) * LERP;
-        cy += (my - cy) * LERP;
-        cur.style.left = cx + 'px';
-        cur.style.top = cy + 'px';
-        requestAnimationFrame(loop);
-      })();
     })();
     /* ── End Custom Cursor ──────────────────────────────────────────── */
 
@@ -2494,9 +2493,43 @@
       const st = document.getElementById('fst'), btn = document.getElementById('sbtn');
       if (!nm || !em || !sb || !mg) { st.textContent = 'Please fill in all fields.'; st.className = 'fst err'; return; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { st.textContent = 'Please enter a valid email.'; st.className = 'fst err'; return; }
-      btn.disabled = true; btn.textContent = 'Opening mail client…';
-      window.location.href = `mailto:IsmailZidan@gmail.com?subject=${encodeURIComponent(sb)}&body=${encodeURIComponent('Name: ' + nm + '\nEmail: ' + em + '\n\n' + mg)}`;
-      setTimeout(() => { st.textContent = 'Mail client opened. Thank you!'; st.className = 'fst ok'; this.reset(); btn.disabled = false; btn.textContent = 'Send Message'; }, 1500);
+      
+      btn.disabled = true;
+      btn.textContent = 'Sending Message...';
+      st.textContent = '';
+      st.className = 'fst';
+
+      const formData = new FormData(this);
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: json
+      })
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+          st.textContent = 'Message sent successfully! I will get back to you soon.';
+          st.className = 'fst ok';
+          this.reset();
+        } else {
+          st.textContent = json.message || 'Something went wrong. Please try again.';
+          st.className = 'fst err';
+        }
+      })
+      .catch(error => {
+        st.textContent = 'Oops! Failed to connect to server.';
+        st.className = 'fst err';
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+      });
     });
   </script>
 </body>
