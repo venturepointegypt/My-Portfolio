@@ -28,6 +28,22 @@
     content="Senior IT Advisor & Digital Transformation Expert with 28+ years across MENA. USAID & EU-funded programs." />
   <meta property="twitter:image" content="https://venturepointegypt.github.io/My-Portfolio/Ismail_zidan_profile.jpg" />
 
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ismail Zidan",
+      "jobTitle": "Senior IT Advisor",
+      "url": "https://venturepointegypt.github.io/My-Portfolio/",
+      "sameAs": [
+        "https://linkedin.com/in/ismailzidan"
+      ],
+      "description": "Senior IT Advisor & Digital Transformation Expert with 28+ years across MENA.",
+      "knowsAbout": ["Digital Transformation", "Information Systems", "Project Management", "E-Government"]
+    }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -296,6 +312,11 @@
       color: var(--black)
     }
 
+    .nl a.active {
+      color: var(--black);
+      font-weight: 500
+    }
+
     .nl .cta {
       padding: 8px 22px;
       border: 1px solid var(--black);
@@ -307,6 +328,65 @@
     .nl .cta:hover {
       background: var(--black);
       color: var(--bg)
+    }
+
+    /* Scroll Progress Bar */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      z-index: 1001;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: var(--black);
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
+
+    /* Back to Top Button */
+    #back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 48px;
+      height: 48px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--black);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    #back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    #back-to-top:hover {
+      background: var(--bg-alt);
+      border-color: var(--black);
+      transform: translateY(-5px);
+    }
+
+    #back-to-top svg {
+      width: 20px;
+      height: 20px;
     }
 
     .hbg {
@@ -1439,6 +1519,18 @@
   <!-- Custom cursor -->
   <div id="cursor" aria-hidden="true"></div>
 
+  <!-- Scroll Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
   <nav id="nav">
     <div class="ni">
       <a href="#hero" class="logo" aria-label="Ismail Zidan Home">
@@ -1910,7 +2002,7 @@
       <p class="fn">Ismail Zidan</p>
       <p class="fq">"Committed to advancing sustainable digital transformation across public and private sectors through
         strategic technology leadership and innovation."</p>
-      <p class="fc">© 2025 Ismail Zidan. All rights reserved.</p>
+      <p class="fc">© <span id="year">2025</span> Ismail Zidan. All rights reserved.</p>
     </div>
   </footer>
 
@@ -2060,6 +2152,8 @@
       const BASE_SPEED = 0.30; // guaranteed minimum drift speed
       const MAX_DELTA = 50;   // ms – delta cap so mobile never burns
       const NODE_R = 2.2;
+      const REPULSE_DIST = 60;  // px – nodes repel when closer than this
+      const REPULSE_STRENGTH = 0.35; // how hard the push-back force is
       // Color is read dynamically each frame from the CSS token so dark mode works
       const BODY = document.body;
 
@@ -2102,6 +2196,26 @@
 
         ctx.clearRect(0, 0, W, H);
 
+        // --- repulsion pass: push nodes apart if too close ---
+        const repDist2 = REPULSE_DIST * REPULSE_DIST;
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i], b = nodes[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const dist2 = dx * dx + dy * dy;
+            if (dist2 < repDist2 && dist2 > 0.01) {
+              const dist = Math.sqrt(dist2);
+              // Strength grows as particles get closer (inverse falloff)
+              const force = REPULSE_STRENGTH * (1 - dist / REPULSE_DIST);
+              const nx = dx / dist, ny = dy / dist; // unit vector a→b direction
+              a.vx += nx * force;
+              a.vy += ny * force;
+              b.vx -= nx * force;
+              b.vy -= ny * force;
+            }
+          }
+        }
+
         // --- update nodes ---
         nodes.forEach(n => {
           // Nudge by mouse delta (fades out each frame)
@@ -2121,6 +2235,10 @@
             n.vx = Math.cos(angle) * BASE_SPEED;
             n.vy = Math.sin(angle) * BASE_SPEED;
           }
+
+          // Gentle friction so repulsion energy dissipates smoothly
+          n.vx *= 0.995;
+          n.vy *= 0.995;
 
           n.x += n.vx * factor;
           n.y += n.vy * factor;
@@ -2473,7 +2591,55 @@
     /* ── End Timeline Draw-In ───────────────────────────────────────── */
 
     const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('on', window.scrollY > 20), { passive: true });
+    const progressBar = document.getElementById('progress-bar');
+    const btt = document.getElementById('back-to-top');
+    const nlLinks = document.querySelectorAll('#nl a');
+    const sections = document.querySelectorAll('section[id]');
+    
+    // Dynamic Year
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      nav.classList.toggle('on', y > 20);
+      
+      // Progress Bar
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (progressBar) progressBar.style.width = scrolled + "%";
+
+      // Back to Top Button
+      if (btt) {
+        if (y > 500) btt.classList.add('show');
+        else btt.classList.remove('show');
+      }
+    }, { passive: true });
+
+    if (btt) {
+      btt.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // Active Nav Highlighting
+    const navObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          nlLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '-10% 0px -70% 0px' });
+
+    sections.forEach(section => navObs.observe(section));
+
     document.getElementById('hbg').addEventListener('click', () => document.getElementById('nl').classList.toggle('open'));
     document.querySelectorAll('#nl a').forEach(a => a.addEventListener('click', () => document.getElementById('nl').classList.remove('open')));
     const ro = new IntersectionObserver((entries) => {
